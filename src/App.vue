@@ -5,7 +5,7 @@
       </div>
     </div>
 
-  <div class="container" :class="{ 'party-mode': partyMode, falling, rising }" :style="gridStyle">
+  <div v-else class="container" :class="{ 'party-mode': partyMode, falling, rising }" :style="gridStyle">
     <div class="cell" v-for="i in totalCells" :key="i" :class="{ rotated: rotatedCells.has(i), special: i === specialCell, party: i === partyCell }" :style="(falling || rising) ? { animationDelay: `${Math.random() * 0.8}s` } : {}" @click="onCellClick(i)">
       <img :src="shuffled[i - 1]" alt="flower" />
     </div>
