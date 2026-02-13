@@ -1,10 +1,10 @@
 <template>
     <div v-if="!started" class="welcome-screen" @click="startExperience">
       <div class="welcome-content">
-        <h1>🌸 Click to Start 🌸</h1>
+        <h1>🌸 点击开始 🌸</h1>
       </div>
       <div class="welcome-hint">
-        💡 Tip: Look for the flower with a red dot
+        💡 Tip: 选择一朵特别的花
   </div>
     </div>
 
@@ -18,7 +18,7 @@
     <button class="close-button" @click="closeDialog">&times;</button>
 
     <template v-if="dialogStep === 'ask'">
-      <div style="color: white">Simon, will you be the man i need?🐰</div>
+      <div style="color: white">我们能一直做好朋友么?</div>
       <div class="dialog-buttons">
         <button class="fall-button" @click="answerYes">Yes</button>
         <button class="fall-button" @click="answerNo">No</button>
@@ -26,7 +26,7 @@
     </template>
 
     <template v-if="dialogStep === 'sure'">
-      <div style="color: white">Are you sure?🥺</div>
+      <div style="color: white">真的这样选择么?🥺</div>
       <div class="dialog-buttons">
         <button ref="runawayRef" class="fall-button runaway" :style="{ transform: `translate(${runawayOffset.x}px, ${runawayOffset.y}px)` }" @mouseenter="moveRunaway" @touchstart.prevent="moveRunaway" @click="sureYes">Yes</button>
         <button class="fall-button" @click="sureNo">No</button>
@@ -34,7 +34,7 @@
     </template>
 
     <template v-if="dialogStep === 'party'">
-      <div style="color: white">yeeeeeeeeaaaah!🦊</div>
+      <div style="color: white">yeeeeeeeeaaaah!🧑‍🤝‍🧑</div>
     </template>
   </dialog>
 </template>
@@ -55,10 +55,12 @@ const images = [flower1, flower2, flower3, flower4, flower5, flower6]
 
 const bgAudio = new Audio(partyMusic)
 bgAudio.loop = true
-bgAudio.volume = 0.4
+bgAudio.volume = 0.6
+bgAudio.preload = 'auto'
 
 const audio = new Audio(clickMusic)
 audio.loop = true
+audio.preload = 'auto'
 
 const width = ref(window.innerWidth)
 const height = ref(window.innerHeight)
@@ -340,34 +342,26 @@ const gridStyle = computed(() => ({
       font-size: 2rem;
     }
   }
-  
-  p {
-    font-size: 1.5rem;
-    opacity: 0.9;
-    font-family: 'Poppins', sans-serif;
-    
-    @media (max-width: 767px) {
-      font-size: 1rem;
-    }
-  }
+
 }
 
 .welcome-hint {
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  color: rgba(255, 255, 255, 0.8);
+  margin-top: 2rem;  // 在 "点击任意处开始" 下方 2rem
+  color: rgba(255, 255, 255, 0.7);
   font-size: 0.9rem;
   font-family: 'Poppins', sans-serif;
-  text-align: center;
   animation: fadeInOut 2s ease-in-out infinite;
   
   @media (max-width: 767px) {
-    bottom: 1.5rem;
+    margin-top: 1.5rem;
     font-size: 0.75rem;
     padding: 0 1rem;
   }
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.9; }
 }
 
 @keyframes fadeInOut {
