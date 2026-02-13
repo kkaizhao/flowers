@@ -9,7 +9,7 @@
     <button class="close-button" @click="closeDialog">&times;</button>
 
     <template v-if="dialogStep === 'ask'">
-      <div style="color: white">Anja, will you be my valentine?</div>
+      <div style="color: white">Simon, will you be the man i need?🐰</div>
       <div class="dialog-buttons">
         <button class="fall-button" @click="answerYes">Yes</button>
         <button class="fall-button" @click="answerNo">No</button>
@@ -17,7 +17,7 @@
     </template>
 
     <template v-if="dialogStep === 'sure'">
-      <div style="color: white">Are you sure?</div>
+      <div style="color: white">Are you sure?🥺</div>
       <div class="dialog-buttons">
         <button ref="runawayRef" class="fall-button runaway" :style="{ transform: `translate(${runawayOffset.x}px, ${runawayOffset.y}px)` }" @mouseover="moveRunaway" @click="sureYes">Yes</button>
         <button class="fall-button" @click="sureNo">No</button>
@@ -25,7 +25,7 @@
     </template>
 
     <template v-if="dialogStep === 'party'">
-      <div style="color: white">yeeeeeeeeaaaah!</div>
+      <div style="color: white">yeeeeeeeeaaaah!🦊</div>
     </template>
   </dialog>
 </template>
@@ -39,10 +39,16 @@ import flower3 from '@/assets/images/flower_3.png'
 import flower4 from '@/assets/images/flower_4.png'
 import flower5 from '@/assets/images/flower_5.png'
 import flower6 from '@/assets/images/flower_6.png'
-import partyMusic from '@/assets/music/partyonwebbi.wav'
+import partyMusic from '@/assets/music/Intro.wav'
+import clickMusic from '@/assets/music/ManINeed.wav'
 
 const images = [flower1, flower2, flower3, flower4, flower5, flower6]
-const audio = new Audio(partyMusic)
+
+const bgAudio = new Audio(partyMusic)
+bgAudio.loop = true
+bgAudio.volume = 0.4
+
+const audio = new Audio(clickMusic)
 audio.addEventListener('timeupdate', () => {
   if (audio.duration - audio.currentTime <= 0.3) {
     audio.currentTime = 0.95
@@ -88,10 +94,12 @@ function onCellClick(i: number) {
   } else if (i === partyCell.value) {
     partyMode.value = !partyMode.value
     if (partyMode.value) {
-      audio.currentTime = 0.95
+      bgAudio.pause()
+      audio.currentTime = 0
       audio.play()
     } else {
       audio.pause()
+      bgAudio.play()
     }
   } else {
     toggleRotation(i)
@@ -112,13 +120,15 @@ const rising = ref(false)
 
 function startParty() {
   partyMode.value = true
-  audio.currentTime = 0.95
+  bgAudio.pause()
+  audio.currentTime = 0
   audio.play()
 }
 
 function stopParty() {
   partyMode.value = false
   audio.pause()
+  bgAudio.play()
 }
 
 function dropFlowers() {
