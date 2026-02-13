@@ -1,10 +1,10 @@
 <template>
     <div v-if="!started" class="welcome-screen" @click="startExperience">
       <div class="welcome-content">
-        <h1>🌸 点击开始 🌸</h1>
+        <h1>🌸 Click to start 🌸</h1>
       </div>
       <div class="welcome-hint">
-        💡 Tip: 选择一朵特别的花
+        💡 Tip: Find one special flower
   </div>
     </div>
 
@@ -18,7 +18,7 @@
     <button class="close-button" @click="closeDialog">&times;</button>
 
     <template v-if="dialogStep === 'ask'">
-      <div style="color: white">我们能一直做好朋友么?</div>
+      <div style="color: white">🐰 Simon, come be the man i need? 🐰</div>
       <div class="dialog-buttons">
         <button class="fall-button" @click="answerYes">Yes</button>
         <button class="fall-button" @click="answerNo">No</button>
@@ -26,7 +26,7 @@
     </template>
 
     <template v-if="dialogStep === 'sure'">
-      <div style="color: white">真的这样选择么?🥺</div>
+      <div style="color: white">Are you sure?🥺</div>
       <div class="dialog-buttons">
         <button ref="runawayRef" class="fall-button runaway" :style="{ transform: `translate(${runawayOffset.x}px, ${runawayOffset.y}px)` }" @mouseenter="moveRunaway" @touchstart.prevent="moveRunaway" @click="sureYes">Yes</button>
         <button class="fall-button" @click="sureNo">No</button>
@@ -34,7 +34,7 @@
     </template>
 
     <template v-if="dialogStep === 'party'">
-      <div style="color: white">yeeeeeeeeaaaah!🧑‍🤝‍🧑</div>
+      <div style="color: white">🦊 yeeeeeeeeaaaah!🦊</div>
     </template>
   </dialog>
 </template>
@@ -329,13 +329,13 @@ const gridStyle = computed(() => ({
 
 .welcome-content {
   text-align: center;
-  color: white;
+  color:white;
   user-select: none;
   animation: bounce 2s ease-in-out infinite;
   
   h1 {
     font-size: 3rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0;
     font-family: 'Poppins', sans-serif;
     
     @media (max-width: 767px) {
@@ -346,10 +346,11 @@ const gridStyle = computed(() => ({
 }
 
 .welcome-hint {
-  margin-top: 2rem;  // 在 "点击任意处开始" 下方 2rem
+  margin-top: 2rem;
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.9rem;
   font-family: 'Poppins', sans-serif;
+  text-align: center;
   animation: fadeInOut 2s ease-in-out infinite;
   
   @media (max-width: 767px) {
@@ -364,10 +365,6 @@ const gridStyle = computed(() => ({
   50% { opacity: 0.9; }
 }
 
-@keyframes fadeInOut {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-}
 
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
