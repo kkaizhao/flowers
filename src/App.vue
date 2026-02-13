@@ -1,4 +1,10 @@
 <template>
+    <div v-if="!started" class="welcome-screen" @click="startExperience">
+      <div class="welcome-content">
+        <h1>🌸 Click to Start 🌸</h1>
+      </div>
+    </div>
+
   <div class="container" :class="{ 'party-mode': partyMode, falling, rising }" :style="gridStyle">
     <div class="cell" v-for="i in totalCells" :key="i" :class="{ rotated: rotatedCells.has(i), special: i === specialCell, party: i === partyCell }" :style="(falling || rising) ? { animationDelay: `${Math.random() * 0.8}s` } : {}" @click="onCellClick(i)">
       <img :src="shuffled[i - 1]" alt="flower" />
@@ -19,7 +25,7 @@
     <template v-if="dialogStep === 'sure'">
       <div style="color: white">Are you sure?🥺</div>
       <div class="dialog-buttons">
-        <button ref="runawayRef" class="fall-button runaway" :style="{ transform: `translate(${runawayOffset.x}px, ${runawayOffset.y}px)` }" @mouseover="moveRunaway" @click="sureYes">Yes</button>
+        <button ref="runawayRef" class="fall-button runaway" :style="{ transform: `translate(${runawayOffset.x}px, ${runawayOffset.y}px)` }" @mouseenter="moveRunaway" @touchstart.prevent="moveRunaway" @click="sureYes">Yes</button>
         <button class="fall-button" @click="sureNo">No</button>
       </div>
     </template>
@@ -49,14 +55,24 @@ bgAudio.loop = true
 bgAudio.volume = 0.4
 
 const audio = new Audio(clickMusic)
-audio.addEventListener('timeupdate', () => {
-  if (audio.duration - audio.currentTime <= 0.3) {
-    audio.currentTime = 0.95
-  }
-})
+partyMusic.loop = true
 
 const width = ref(window.innerWidth)
 const height = ref(window.innerHeight)
+
+const started = ref(false)
+
+function startExperience() {
+  started.value = true
+  bgAudio.play().catch(err => {
+    console.log('Auto-play prevented:', err)
+    document.addEventListener('click', () => {
+      if (bgAudio.paused) {
+        bgAudio.play()
+      }
+    }, { once: true })
+  })
+}
 
 function onResize() {
   width.value = window.innerWidth
@@ -88,6 +104,10 @@ function toggleRotation(i: number) {
 }
 
 function onCellClick(i: number) {
+  if(bgAudio.paused && !partyMode.value) {
+    bgAudio.play()
+  }
+
   if (i === specialCell.value) {
     dialogStep.value = 'ask'
     dialogRef.value?.showModal()
