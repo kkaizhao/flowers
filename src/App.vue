@@ -55,7 +55,7 @@ bgAudio.loop = true
 bgAudio.volume = 0.4
 
 const audio = new Audio(clickMusic)
-partyMusic.loop = true
+audio.loop = true
 
 const width = ref(window.innerWidth)
 const height = ref(window.innerHeight)
