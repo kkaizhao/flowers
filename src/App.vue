@@ -18,7 +18,7 @@
   <button class="close-button" @click="closeDialog">&times;</button>
 
   <template v-if="dialogStep === 'ask'">
-    <div style="color: white">🐰 Simon, come be the man i need? 🐰</div>
+    <div style="color: white">Simon, come be the man i need?🐰</div>
     <div class="dialog-buttons">
       <button class="fall-button" @click="answerYes">Yes</button>
       <button class="fall-button" @click="answerNo">No</button>
@@ -26,7 +26,7 @@
   </template>
 
   <template v-if="dialogStep === 'sure'">
-    <div style="color: white">🥺 Are you sure? 🥺</div>
+    <div style="color: white">Are you sure? 🥺</div>
     <div class="dialog-buttons">
       <button ref="runawayRef" class="fall-button runaway" :style="{ transform: `translate(${runawayOffset.x}px, ${runawayOffset.y}px)` }" @mouseenter="moveRunaway" @touchstart.prevent="moveRunaway" @click="sureYes">Yes</button>
       <button class="fall-button" @click="sureNo">No</button>
@@ -34,7 +34,7 @@
   </template>
 
   <template v-if="dialogStep === 'party'">
-    <div style="color: white">🦊 yeeeeeeeeaaaah! 🦊</div>
+    <div style="color: white">🦊yeeeeeeeeaaaah!🦊</div>
   </template>
 </dialog>
 </template>
@@ -308,18 +308,18 @@ to { transform: rotate(360deg); }
 }
 
 .welcome-screen {
-position: fixed;
-top: 0;
-left: 0;
-width: 100vw;
-height: 100vh;
-display: flex;
-align-items: center;
-justify-content: center;
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-cursor: pointer;
-z-index: 9999;
-animation: fadeIn 0.5s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  cursor: pointer;
+  z-index: 9999;
+  animation: fadeIn 0.5s ease;
 }
 
 @keyframes fadeIn {
