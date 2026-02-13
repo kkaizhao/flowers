@@ -3,6 +3,9 @@
       <div class="welcome-content">
         <h1>🌸 Click to Start 🌸</h1>
       </div>
+      <div class="welcome-hint">
+        💡 Tip: Look for the flower with a red dot
+  </div>
     </div>
 
   <div v-else class="container" :class="{ 'party-mode': partyMode, falling, rising }" :style="gridStyle">
@@ -347,6 +350,29 @@ const gridStyle = computed(() => ({
       font-size: 1rem;
     }
   }
+}
+
+.welcome-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  animation: fadeInOut 2s ease-in-out infinite;
+  
+  @media (max-width: 767px) {
+    bottom: 1.5rem;
+    font-size: 0.75rem;
+    padding: 0 1rem;
+  }
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
 }
 
 @keyframes bounce {
