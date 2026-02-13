@@ -1,7 +1,7 @@
 <template>
   <div v-if="!started" class="welcome-screen" @click="startExperience">
     <div class="welcome-content">
-      <h1>🌸 点击开始 🌸</h1>
+      <h1>🌸 Click to start 🌸</h1>
     </div>
     <div class="welcome-hint">
       💡 Tip: 选择一朵特别的花
