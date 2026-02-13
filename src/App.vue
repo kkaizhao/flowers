@@ -1,42 +1,42 @@
 <template>
-    <div v-if="!started" class="welcome-screen" @click="startExperience">
-      <div class="welcome-content">
-        <h1>🌸 Click to start 🌸</h1>
-      </div>
-      <div class="welcome-hint">
-        💡 Tip: Find one special flower
-  </div>
+  <div v-if="!started" class="welcome-screen" @click="startExperience">
+    <div class="welcome-content">
+      <h1>🌸 点击开始 🌸</h1>
     </div>
-
-  <div v-else class="container" :class="{ 'party-mode': partyMode, falling, rising }" :style="gridStyle">
-    <div class="cell" v-for="i in totalCells" :key="i" :class="{ rotated: rotatedCells.has(i), special: i === specialCell, party: i === partyCell }" :style="(falling || rising) ? { animationDelay: `${Math.random() * 0.8}s` } : {}" @click="onCellClick(i)">
-      <img :src="shuffled[i - 1]" alt="flower" />
-    </div>
+    <div class="welcome-hint">
+      💡 Tip: 选择一朵特别的花
+</div>
   </div>
 
-  <dialog ref="dialogRef" class="flower-dialog" @cancel.prevent>
-    <button class="close-button" @click="closeDialog">&times;</button>
+<div v-else class="container" :class="{ 'party-mode': partyMode, falling, rising }" :style="gridStyle">
+  <div class="cell" v-for="i in totalCells" :key="i" :class="{ rotated: rotatedCells.has(i), special: i === specialCell, party: i === partyCell }" :style="(falling || rising) ? { animationDelay: `${Math.random() * 0.8}s` } : {}" @click="onCellClick(i)">
+    <img :src="shuffled[i - 1]" alt="flower" />
+  </div>
+</div>
 
-    <template v-if="dialogStep === 'ask'">
-      <div style="color: white">🐰 Simon, come be the man i need? 🐰</div>
-      <div class="dialog-buttons">
-        <button class="fall-button" @click="answerYes">Yes</button>
-        <button class="fall-button" @click="answerNo">No</button>
-      </div>
-    </template>
+<dialog ref="dialogRef" class="flower-dialog" @cancel.prevent>
+  <button class="close-button" @click="closeDialog">&times;</button>
 
-    <template v-if="dialogStep === 'sure'">
-      <div style="color: white">Are you sure?🥺</div>
-      <div class="dialog-buttons">
-        <button ref="runawayRef" class="fall-button runaway" :style="{ transform: `translate(${runawayOffset.x}px, ${runawayOffset.y}px)` }" @mouseenter="moveRunaway" @touchstart.prevent="moveRunaway" @click="sureYes">Yes</button>
-        <button class="fall-button" @click="sureNo">No</button>
-      </div>
-    </template>
+  <template v-if="dialogStep === 'ask'">
+    <div style="color: white">我们能一直做好朋友么?</div>
+    <div class="dialog-buttons">
+      <button class="fall-button" @click="answerYes">Yes</button>
+      <button class="fall-button" @click="answerNo">No</button>
+    </div>
+  </template>
 
-    <template v-if="dialogStep === 'party'">
-      <div style="color: white">🦊 yeeeeeeeeaaaah!🦊</div>
-    </template>
-  </dialog>
+  <template v-if="dialogStep === 'sure'">
+    <div style="color: white">真的这样选择么?🥺</div>
+    <div class="dialog-buttons">
+      <button ref="runawayRef" class="fall-button runaway" :style="{ transform: `translate(${runawayOffset.x}px, ${runawayOffset.y}px)` }" @mouseenter="moveRunaway" @touchstart.prevent="moveRunaway" @click="sureYes">Yes</button>
+      <button class="fall-button" @click="sureNo">No</button>
+    </div>
+  </template>
+
+  <template v-if="dialogStep === 'party'">
+    <div style="color: white">yeeeeeeeeaaaah!🧑‍🤝‍🧑</div>
+  </template>
+</dialog>
 </template>
 
 <script setup lang="ts">
@@ -68,20 +68,20 @@ const height = ref(window.innerHeight)
 const started = ref(false)
 
 function startExperience() {
-  started.value = true
-  bgAudio.play().catch(err => {
-    console.log('Auto-play prevented:', err)
-    document.addEventListener('click', () => {
-      if (bgAudio.paused) {
-        bgAudio.play()
-      }
-    }, { once: true })
-  })
+started.value = true
+bgAudio.play().catch(err => {
+  console.log('Auto-play prevented:', err)
+  document.addEventListener('click', () => {
+    if (bgAudio.paused) {
+      bgAudio.play()
+    }
+  }, { once: true })
+})
 }
 
 function onResize() {
-  width.value = window.innerWidth
-  height.value = window.innerHeight
+width.value = window.innerWidth
+height.value = window.innerHeight
 }
 
 onMounted(() => window.addEventListener('resize', onResize))
@@ -100,120 +100,120 @@ const falling = ref(false)
 const dialogRef = ref<HTMLDialogElement>()
 
 function toggleRotation(i: number) {
-  if (rotatedCells.value.has(i)) {
-    rotatedCells.value.delete(i)
-  } else {
-    rotatedCells.value.add(i)
-  }
-  rotatedCells.value = new Set(rotatedCells.value)
+if (rotatedCells.value.has(i)) {
+  rotatedCells.value.delete(i)
+} else {
+  rotatedCells.value.add(i)
+}
+rotatedCells.value = new Set(rotatedCells.value)
 }
 
 function onCellClick(i: number) {
-  if(bgAudio.paused && !partyMode.value) {
+if(bgAudio.paused && !partyMode.value) {
+  bgAudio.play()
+}
+
+if (i === specialCell.value) {
+  dialogStep.value = 'ask'
+  dialogRef.value?.showModal()
+} else if (i === partyCell.value) {
+  partyMode.value = !partyMode.value
+  if (partyMode.value) {
+    bgAudio.pause()
+    audio.currentTime = 0
+    audio.play()
+  } else {
+    audio.pause()
     bgAudio.play()
   }
-
-  if (i === specialCell.value) {
-    dialogStep.value = 'ask'
-    dialogRef.value?.showModal()
-  } else if (i === partyCell.value) {
-    partyMode.value = !partyMode.value
-    if (partyMode.value) {
-      bgAudio.pause()
-      audio.currentTime = 0
-      audio.play()
-    } else {
-      audio.pause()
-      bgAudio.play()
-    }
-  } else {
-    toggleRotation(i)
-  }
+} else {
+  toggleRotation(i)
+}
 }
 
 const dialogStep = ref<'ask' | 'sure' | 'party'>('ask')
 
 function closeDialog() {
-  dialogRef.value?.close()
-  dialogStep.value = 'ask'
-  if (partyMode.value) {
-    stopParty()
-  }
+dialogRef.value?.close()
+dialogStep.value = 'ask'
+if (partyMode.value) {
+  stopParty()
+}
 }
 
 const rising = ref(false)
 
 function startParty() {
-  partyMode.value = true
-  bgAudio.pause()
-  audio.currentTime = 0
-  audio.play()
+partyMode.value = true
+bgAudio.pause()
+audio.currentTime = 0
+audio.play()
 }
 
 function stopParty() {
-  partyMode.value = false
-  audio.pause()
-  bgAudio.play()
+partyMode.value = false
+audio.pause()
+bgAudio.play()
 }
 
 function dropFlowers() {
-  rising.value = false
-  falling.value = true
+rising.value = false
+falling.value = true
 }
 
 function riseFlowers() {
-  falling.value = false
-  rising.value = true
+falling.value = false
+rising.value = true
 }
 
 function answerYes() {
-  dialogStep.value = 'party'
-  startParty()
+dialogStep.value = 'party'
+startParty()
 }
 
 function answerNo() {
-  dialogStep.value = 'sure'
-  dropFlowers()
+dialogStep.value = 'sure'
+dropFlowers()
 }
 
 function sureYes() {
-  closeDialog()
+closeDialog()
 }
 
 const runawayOffset = ref({ x: 0, y: 0 })
 const runawayRef = ref<HTMLButtonElement>()
 
 function moveRunaway() {
-  const dialog = dialogRef.value
-  const btn = runawayRef.value
-  if (!dialog || !btn) return
+const dialog = dialogRef.value
+const btn = runawayRef.value
+if (!dialog || !btn) return
 
-  const dialogRect = dialog.getBoundingClientRect()
-  const btnRect = btn.getBoundingClientRect()
+const dialogRect = dialog.getBoundingClientRect()
+const btnRect = btn.getBoundingClientRect()
 
-  const padding = 16
-  const minX = dialogRect.left + padding - (btnRect.left - runawayOffset.value.x)
-  const maxX = dialogRect.right - padding - btnRect.width - (btnRect.left - runawayOffset.value.x)
-  const minY = dialogRect.top + padding - (btnRect.top - runawayOffset.value.y)
-  const maxY = dialogRect.bottom - padding - btnRect.height - (btnRect.top - runawayOffset.value.y)
+const padding = 16
+const minX = dialogRect.left + padding - (btnRect.left - runawayOffset.value.x)
+const maxX = dialogRect.right - padding - btnRect.width - (btnRect.left - runawayOffset.value.x)
+const minY = dialogRect.top + padding - (btnRect.top - runawayOffset.value.y)
+const maxY = dialogRect.bottom - padding - btnRect.height - (btnRect.top - runawayOffset.value.y)
 
-  const x = minX + Math.random() * (maxX - minX)
-  const y = minY + Math.random() * (maxY - minY)
-  runawayOffset.value = { x, y }
+const x = minX + Math.random() * (maxX - minX)
+const y = minY + Math.random() * (maxY - minY)
+runawayOffset.value = { x, y }
 }
 
 function sureNo() {
-  dialogStep.value = 'ask'
-  runawayOffset.value = { x: 0, y: 0 }
-  riseFlowers()
+dialogStep.value = 'ask'
+runawayOffset.value = { x: 0, y: 0 }
+riseFlowers()
 }
 
 const cols = computed(() => {
-  let c = Math.round(width.value / targetSize.value)
-  const size = (width.value - (c - 1) * gap) / c
-  if (size < minSize.value) c--
-  if (size > maxSize.value) c++
-  return c
+let c = Math.round(width.value / targetSize.value)
+const size = (width.value - (c - 1) * gap) / c
+if (size < minSize.value) c--
+if (size > maxSize.value) c++
+return c
 })
 
 const cellSize = computed(() => (width.value - (cols.value - 1) * gap) / cols.value)
@@ -221,307 +221,310 @@ const rows = computed(() => Math.ceil((height.value + gap) / (cellSize.value + g
 const totalCells = computed(() => cols.value * rows.value)
 const specialCell = computed(() => Math.floor(Math.random() * totalCells.value) + 1)
 const partyCell = computed(() => {
-  let cell
-  do {
-    cell = Math.floor(Math.random() * totalCells.value) + 1
-  } while (cell === specialCell.value)
-  return cell
+let cell
+do {
+  cell = Math.floor(Math.random() * totalCells.value) + 1
+} while (cell === specialCell.value)
+return cell
 })
 
 const shuffled = computed(() => {
-  return Array.from({ length: totalCells.value }, () =>
-    images[Math.floor(Math.random() * images.length)]
-  )
+return Array.from({ length: totalCells.value }, () =>
+  images[Math.floor(Math.random() * images.length)]
+)
 })
 
 const gridStyle = computed(() => ({
-  gridTemplateColumns: `repeat(${cols.value}, ${cellSize.value}px)`,
-  gridTemplateRows: `repeat(${rows.value}, ${cellSize.value}px)`,
-  gap: `${gap}px`,
+gridTemplateColumns: `repeat(${cols.value}, ${cellSize.value}px)`,
+gridTemplateRows: `repeat(${rows.value}, ${cellSize.value}px)`,
+gap: `${gap}px`,
 }))
 </script>
 
 <style scoped lang="scss">
 .container {
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  display: grid;
-  transition: background-color 5s ease;
+width: 100vw;
+height: 100vh;
+overflow: hidden;
+display: grid;
+transition: background-color 5s ease;
 
-  &.party-mode {
-    animation: strobe 0.3s infinite;
-  }
+&.party-mode {
+  animation: strobe 0.3s infinite;
+}
 
-  &.falling {
-    background-color: #1a1a1a;
-  }
+&.falling {
+  background-color: #1a1a1a;
+}
 }
 
 @keyframes strobe {
-  0% { background-color: black; }
-  50% { background-color: white; }
-  100% { background-color: black; }
+0% { background-color: black; }
+50% { background-color: white; }
+100% { background-color: black; }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 0.5; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.3); }
+0%, 100% { opacity: 0.5; transform: scale(1); }
+50% { opacity: 1; transform: scale(1.3); }
 }
 
 @keyframes glow {
-  0%, 100% { box-shadow: 0 0 8px rgba(255, 100, 150, 0.4); }
-  50% { box-shadow: 0 0 20px rgba(255, 100, 150, 0.8); }
+0%, 100% { box-shadow: 0 0 8px rgba(255, 100, 150, 0.4); }
+50% { box-shadow: 0 0 20px rgba(255, 100, 150, 0.8); }
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+from { transform: rotate(0deg); }
+to { transform: rotate(360deg); }
 }
 
 @keyframes fall {
-  0% {
-    transform: translateY(0) rotate(0deg);
-    opacity: 1;
-  }
-  70% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(100vh) rotate(45deg);
-    opacity: 0;
-  }
+0% {
+  transform: translateY(0) rotate(0deg);
+  opacity: 1;
+}
+70% {
+  opacity: 1;
+}
+100% {
+  transform: translateY(100vh) rotate(45deg);
+  opacity: 0;
+}
 }
 
 @keyframes rise {
-  0% {
-    transform: translateY(100vh) rotate(45deg);
-    opacity: 0;
-  }
-  30% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(0) rotate(0deg);
-    opacity: 1;
-  }
+0% {
+  transform: translateY(100vh) rotate(45deg);
+  opacity: 0;
+}
+30% {
+  opacity: 1;
+}
+100% {
+  transform: translateY(0) rotate(0deg);
+  opacity: 1;
+}
 }
 
 .welcome-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  cursor: pointer;
-  z-index: 9999;
-  animation: fadeIn 0.5s ease;
+position: fixed;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vh;
+display: flex;
+align-items: center;
+justify-content: center;
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+cursor: pointer;
+z-index: 9999;
+animation: fadeIn 0.5s ease;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+from { opacity: 0; }
+to { opacity: 1; }
 }
 
 .welcome-content {
-  text-align: center;
-  color:white;
-  user-select: none;
-  animation: bounce 2s ease-in-out infinite;
+text-align: center;
+color: white;
+user-select: none;
+animation: bounce 2s ease-in-out infinite;
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  font-family: 'Poppins', sans-serif;
   
-  h1 {
-    font-size: 3rem;
-    margin-bottom: 0;
-    font-family: 'Poppins', sans-serif;
-    
-    @media (max-width: 767px) {
-      font-size: 2rem;
-    }
+  @media (max-width: 767px) {
+    font-size: 2rem;
   }
+}
 
 }
 
 .welcome-hint {
-  margin-top: 2rem;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
-  font-family: 'Poppins', sans-serif;
-  text-align: center;
-  animation: fadeInOut 2s ease-in-out infinite;
-  
-  @media (max-width: 767px) {
-    margin-top: 1.5rem;
-    font-size: 0.75rem;
-    padding: 0 1rem;
-  }
+margin-top: 2rem;  // 在 "点击任意处开始" 下方 2rem
+color: rgba(255, 255, 255, 0.7);
+font-size: 0.9rem;
+font-family: 'Poppins', sans-serif;
+animation: fadeInOut 2s ease-in-out infinite;
+
+@media (max-width: 767px) {
+  margin-top: 1.5rem;
+  font-size: 0.75rem;
+  padding: 0 1rem;
+}
 }
 
 @keyframes fadeInOut {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 0.9; }
+0%, 100% { opacity: 0.5; }
+50% { opacity: 0.9; }
 }
 
+@keyframes fadeInOut {
+0%, 100% { opacity: 0.6; }
+50% { opacity: 1; }
+}
 
 @keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+0%, 100% { transform: translateY(0); }
+50% { transform: translateY(-10px); }
 }
 
 .cell {
-  cursor: url('@/assets/cursors/hover_32.png'), pointer;
+cursor: url('@/assets/cursors/hover_32.png'), pointer;
 
-  &.special {
-    cursor: url('@/assets/cursors/heart_32.png'), pointer;
-    position: relative;
+&.special {
+  cursor: url('@/assets/cursors/heart_32.png'), pointer;
+  position: relative;
 
-    &::after {
-      @media (max-width: 767px) {
-        content: '';
-        position: absolute;
-        top: 4px;
-        right: 4px;
-        width: 14px;
-        height: 14px;
-        border-radius: 50%;
-        background: rgba(255, 100, 150, 0.9);
-        animation: pulse 1.5s ease-in-out infinite;
-      }
+  &::after {
+    @media (max-width: 767px) {
+      content: '';
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: rgba(255, 100, 150, 0.9);
+      animation: pulse 1.5s ease-in-out infinite;
     }
   }
+}
 
-  &.party {
-    cursor: url('@/assets/cursors/disco_32.png'), pointer;
-  }
+&.party {
+  cursor: url('@/assets/cursors/disco_32.png'), pointer;
+}
 
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 1.5s ease;
-  }
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.5s ease;
+}
 
-  &:hover img {
-    transform: rotate(360deg);
-  }
+&:hover img {
+  transform: rotate(360deg);
+}
 
-  &.rotated img {
-    transform: rotate(360deg);
-  }
+&.rotated img {
+  transform: rotate(360deg);
+}
 
-  .party-mode & img {
-    animation: spin 1s linear infinite;
-  }
+.party-mode & img {
+  animation: spin 1s linear infinite;
+}
 
-  .falling & {
-    animation: fall 1.5s ease-in forwards;
-  }
+.falling & {
+  animation: fall 1.5s ease-in forwards;
+}
 
-  .rising & {
-    opacity: 0;
-    transform: translateY(100vh);
-    animation: rise 1.5s ease-out forwards;
-  }
+.rising & {
+  opacity: 0;
+  transform: translateY(100vh);
+  animation: rise 1.5s ease-out forwards;
+}
 }
 
 .flower-dialog {
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  height: 300px;
-  width: 500px;
-  border-radius: 24px;
-  padding: 3rem 4rem;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  font-size: 2.2rem;
-  letter-spacing: 0.02em;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  outline: none;
-  position: relative;
+border: 1px solid rgba(255, 255, 255, 0.3);
+height: 300px;
+width: 500px;
+border-radius: 24px;
+padding: 3rem 4rem;
+font-family: 'Poppins', sans-serif;
+font-weight: 600;
+font-size: 2.2rem;
+letter-spacing: 0.02em;
+text-align: center;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+background: rgba(255, 255, 255, 0.15);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+box-shadow:
+  0 8px 32px rgba(0, 0, 0, 0.2),
+  inset 0 1px 0 rgba(255, 255, 255, 0.4);
+outline: none;
+position: relative;
 
-  @media (max-width: 767px) {
-    width: 85vw;
-    height: 250px;
-    padding: 2rem 1.5rem;
-    font-size: 1.5rem;
-    border-radius: 18px;
-  }
+@media (max-width: 767px) {
+  width: 85vw;
+  height: 250px;
+  padding: 2rem 1.5rem;
+  font-size: 1.5rem;
+  border-radius: 18px;
+}
 }
 
 .close-button {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 1.8rem;
-  cursor: url('@/assets/cursors/hover_32.png'), pointer;
-  line-height: 1;
-  padding: 0;
-  opacity: 0.7;
-  transition: opacity 0.2s;
+position: absolute;
+top: 1rem;
+right: 1rem;
+background: none;
+border: none;
+color: #fff;
+font-size: 1.8rem;
+cursor: url('@/assets/cursors/hover_32.png'), pointer;
+line-height: 1;
+padding: 0;
+opacity: 0.7;
+transition: opacity 0.2s;
 
-  &:hover {
-    opacity: 1;
-  }
+&:hover {
+  opacity: 1;
+}
 
-  &:focus {
-    outline: none;
-  }
+&:focus {
+  outline: none;
+}
 }
 
 .dialog-buttons {
-  display: flex;
-  gap: 1rem;
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
+display: flex;
+gap: 1rem;
+position: absolute;
+bottom: 2rem;
+left: 50%;
+transform: translateX(-50%);
 }
 
 .fall-button {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;
-  font-size: 1rem;
-  padding: 0.7rem 1.5rem;
+font-family: 'Poppins', sans-serif;
+font-weight: 400;
+font-size: 1rem;
+padding: 0.7rem 1.5rem;
 
-  @media (max-width: 767px) {
-    font-size: 0.85rem;
-    padding: 0.6rem 1.2rem;
-  }
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: #fff;
-  cursor: url('@/assets/cursors/hover_32.png'), pointer;
-  transition: background 0.3s;
+@media (max-width: 767px) {
+  font-size: 0.85rem;
+  padding: 0.6rem 1.2rem;
+}
+border-radius: 16px;
+border: 1px solid rgba(255, 255, 255, 0.3);
+background: rgba(255, 255, 255, 0.15);
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+color: #fff;
+cursor: url('@/assets/cursors/hover_32.png'), pointer;
+transition: background 0.3s;
 
-  &:hover {
-    background: rgba(255, 255, 255, 0.3);
-  }
+&:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
 
-  &:focus {
-    outline: none;
-  }
+&:focus {
+  outline: none;
+}
 
-  &.runaway {
-    position: relative;
-    transition: transform 0.2s ease;
-  }
+&.runaway {
+  position: relative;
+  transition: transform 0.2s ease;
+}
 }
 </style>
