@@ -302,6 +302,58 @@ const gridStyle = computed(() => ({
   }
 }
 
+.welcome-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  cursor: pointer;
+  z-index: 9999;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.welcome-content {
+  text-align: center;
+  color: white;
+  user-select: none;
+  animation: bounce 2s ease-in-out infinite;
+  
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    font-family: 'Poppins', sans-serif;
+    
+    @media (max-width: 767px) {
+      font-size: 2rem;
+    }
+  }
+  
+  p {
+    font-size: 1.5rem;
+    opacity: 0.9;
+    font-family: 'Poppins', sans-serif;
+    
+    @media (max-width: 767px) {
+      font-size: 1rem;
+    }
+  }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
 .cell {
   cursor: url('@/assets/cursors/hover_32.png'), pointer;
 
